@@ -14,16 +14,18 @@ blosc>=1.8.1,<2
 diskcache==4.1.0
 h5py
 jupyter
-matplotlib
-numpy<=1.16.4
-Pillow
+matplotlib~=3.4.2
+numpy~=1.19.5
+Pillow~=8.2.0
 scikit-image>=0.15.0
-scipy
-SimpleITK
-tensorflow>=1.14,<2
+scipy~=1.6.3
+SimpleITK~=2.0.2
+tensorflow
 
 # The book was written targeting PyTorch 1.4, but everything in it should work fine with more up-to-date versions.
-torch==1.4
+torch
 
 # future is here due to a missing dep in caffe2
 # future
+
+requests~=2.25.1
