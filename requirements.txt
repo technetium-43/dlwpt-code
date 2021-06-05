@@ -21,6 +21,7 @@ scikit-image>=0.15.0
 scipy~=1.6.3
 SimpleITK~=2.0.2
 tensorflow
+imageio
 
 # The book was written targeting PyTorch 1.4, but everything in it should work fine with more up-to-date versions.
 torch
