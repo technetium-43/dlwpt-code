@@ -58,17 +58,17 @@ def gradient_loss(y_pred: torch.tensor, model_data: LinearModelData) -> torch.te
     return torch.stack([dl_dw, dl_db])
 
 
-def training_loop(n_epochs: int, model_data: LinearModelData, hyper_parameters: HyperParameters,
-                  parameters: torch.tensor, print_step: int, print_parameters: bool = True) -> torch.tensor:
+def training_loop(n_epochs: int, training_data: LinearModelData, hyper_parameters: HyperParameters,
+                  parameters: torch.tensor, print_step: int = 500, print_parameters: bool = True) -> torch.tensor:
     for epoch in range(n_epochs):
         # Forward Pass
-        temperature_prediction = linear_model(model_data=model_data, parameters=parameters)
+        temperature_prediction = linear_model(model_data=training_data, parameters=parameters)
 
         # Calculate Loss
-        loss = loss_error_squared(y_pred=temperature_prediction, model_data=model_data)
+        loss = loss_error_squared(y_pred=temperature_prediction, model_data=training_data)
 
         # Calculate Gradient of the Loss function
-        loss_gradient = gradient_loss(y_pred=temperature_prediction, model_data=model_data)
+        loss_gradient = gradient_loss(y_pred=temperature_prediction, model_data=training_data)
 
         # Update parameters for learning
         parameters -= hyper_parameters.learning_rate * loss_gradient

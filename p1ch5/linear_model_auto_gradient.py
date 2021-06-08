@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 from dataclasses import dataclass
 
 import torch
@@ -25,8 +25,9 @@ def loss_error_squared(y_pred: torch.tensor, model_data: LinearModelData) -> tor
     return ((y_pred - model_data.temp_celsius) ** 2).mean()
 
 
-def training_loop(n_epochs: int, model_data: LinearModelData, hyper_parameters: HyperParameters,
-                  parameters: torch.tensor, print_parameters: bool = True) -> torch.tensor:
+def training_loop(n_epochs: int, training_data: LinearModelData,
+                  hyper_parameters: HyperParameters, parameters: torch.tensor,
+                  print_parameters: bool = True) -> torch.tensor:
     for epoch in range(n_epochs):
 
         # IMPORTANT reset leaves of derivative graph to zero
@@ -34,16 +35,16 @@ def training_loop(n_epochs: int, model_data: LinearModelData, hyper_parameters: 
             parameters.grad.zero_()
 
         # Forward Pass
-        temperature_prediction = linear_model(model_data=model_data, parameters=parameters)
+        temperature_prediction = linear_model(model_data=training_data, parameters=parameters)
 
         # Calculate Loss
-        loss = loss_error_squared(y_pred=temperature_prediction, model_data=model_data)
+        loss = loss_error_squared(y_pred=temperature_prediction, model_data=training_data)
 
         # Calculate Gradient of the Loss function using auto_grad
-        # https: // pytorch.org / docs / stable / autograd.html  # module-torch.autograd
+        # https://pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html#computing-gradients
         loss.backward()
 
-        # Update parameters for learning
+        # Update parameters for learning using gradient descent
         with torch.no_grad():
             parameters -= hyper_parameters.learning_rate * parameters.grad
 

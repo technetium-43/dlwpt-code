@@ -12,20 +12,20 @@ def test_linear_model():
     hyper_parameters = HyperParameters(learning_rate=learning_rate)
 
     # Organize the model inputs
-    t_c = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
-    t_u = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
-    t_u_normalized = t_u * 0.1
-    # Use requires_grad
+    temperature_celsius = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
+    temperature_unknown = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
+    t_u_normalized = 0.1 * temperature_unknown
+    data = LinearModelData(temp_celsius=temperature_celsius,
+                           temp_unknown=t_u_normalized)
+
+    # Model parameters - use requires_grad for parameter auto-gradient
     # https://pytorch.org/docs/stable/autograd.html?highlight=requires_grad#torch.Tensor.requires_grad
     parameters = torch.tensor([1.0, 0.0], requires_grad=True)  # [Weights, Bias]
-
-    data = LinearModelData(temp_celsius=t_c,
-                           temp_unknown=t_u_normalized)
 
     # Plot the inputs
     render_temp_measurements(data=data)
 
     # Run the training loop
-    final_parameters = training_loop(n_epochs=5_000, model_data=data, hyper_parameters=hyper_parameters,
+    final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,
                                      parameters=parameters, print_parameters=True)
     print(f"Final Parameters [Weights, Bias]: {final_parameters}")

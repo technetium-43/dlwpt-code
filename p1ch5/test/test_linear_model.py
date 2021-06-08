@@ -24,7 +24,7 @@ def test_linear_model_learning_overtraining():
     render_temp_measurements(data=data)
 
     # Run the training loop
-    final_parameters = training_loop(n_epochs=100, model_data=data, hyper_parameters=hyper_parameters,
+    final_parameters = training_loop(n_epochs=100, training_data=data, hyper_parameters=hyper_parameters,
                                      parameters=parameters, print_step=1, print_parameters=True)
 
 
@@ -38,18 +38,19 @@ def test_linear_model_learning_stalling():
     hyper_parameters = HyperParameters(learning_rate=learning_rate)
 
     # Organize the model inputs
-    t_c = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
-    t_u = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
-    parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
+    temperature_celsius = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
+    temperature_unknown = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
+    data = LinearModelData(temp_celsius=temperature_celsius,
+                           temp_unknown=temperature_unknown)
 
-    data = LinearModelData(temp_celsius=t_c,
-                           temp_unknown=t_u)
+    # Model parameters
+    parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
 
     # Plot the inputs
     render_temp_measurements(data=data)
 
     # Run the training loop
-    final_parameters = training_loop(n_epochs=5_000, model_data=data, hyper_parameters=hyper_parameters,
+    final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,
                                      parameters=parameters, print_step=500, print_parameters=True)
 
 
@@ -64,19 +65,19 @@ def test_linear_model_learning_easy_norm():
     hyper_parameters = HyperParameters(learning_rate=learning_rate)
 
     # Organize the model inputs
-    t_c = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
-    t_u = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
+    temperature_celsius = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
+    temperature_unknown = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
+    # Normalize the unknown temperatures to be closer in scale to temperature_celsius
+    temperature_unknown_normalized = 0.1 * temperature_unknown
+    data = LinearModelData(temp_celsius=temperature_celsius,
+                           temp_unknown=temperature_unknown_normalized)
+
+    # Model parameters
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
-
-    # Normalize the unknown temperatures to be closer in scale to t_c
-    t_u_normalized = t_u * 0.1
-
-    data = LinearModelData(temp_celsius=t_c,
-                           temp_unknown=t_u_normalized)
 
     # Plot the inputs
     render_temp_measurements(data=data)
 
     # Run the training loop
-    final_parameters = training_loop(n_epochs=5_000, model_data=data, hyper_parameters=hyper_parameters,
+    final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,
                                      parameters=parameters, print_step=500, print_parameters=True)
