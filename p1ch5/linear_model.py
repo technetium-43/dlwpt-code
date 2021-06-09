@@ -1,19 +1,10 @@
 from typing import NamedTuple
-from dataclasses import dataclass
-
 import torch
 
-
-class LinearModelData(NamedTuple):
-    temp_celsius: torch.tensor
-    temp_unknown: torch.tensor
+from p1ch5.model_data import ModelData, HyperParameters
 
 
-class HyperParameters(NamedTuple):
-    learning_rate: torch.tensor
-
-
-def linear_model(model_data: LinearModelData, parameters: torch.tensor) -> torch.tensor:
+def linear_model(model_data: ModelData, parameters: torch.tensor) -> torch.tensor:
     # m = Linear model
     weights = parameters[0]
     bias = parameters[1]
@@ -21,11 +12,11 @@ def linear_model(model_data: LinearModelData, parameters: torch.tensor) -> torch
     return weights * model_data.temp_unknown + bias
 
 
-def loss_error_squared(y_pred: torch.tensor, model_data: LinearModelData) -> torch.tensor:
+def loss_error_squared(y_pred: torch.tensor, model_data: ModelData) -> torch.tensor:
     return ((y_pred - model_data.temp_celsius) ** 2).mean()
 
 
-def d_model_d_weights(model_data: LinearModelData) -> torch.tensor:
+def d_model_d_weights(model_data: ModelData) -> torch.tensor:
     # du1/dw = Derivative of Linear Model function with respect to the Weight parameter
     return model_data.temp_unknown
 
@@ -35,13 +26,13 @@ def d_linear_model_d_bias() -> torch.tensor:
     return torch.ones(())
 
 
-def d_loss_d_linear_model(y_pred: torch.tensor, model_data: LinearModelData) -> torch.tensor:
+def d_loss_d_linear_model(y_pred: torch.tensor, model_data: ModelData) -> torch.tensor:
     # dl/dm = Derivative of loss with respect to the nested function u1
     # u1 = linear model
     return 2 * (y_pred - model_data.temp_celsius)
 
 
-def gradient_loss(y_pred: torch.tensor, model_data: LinearModelData) -> torch.tensor:
+def gradient_loss(y_pred: torch.tensor, model_data: ModelData) -> torch.tensor:
     dl_du1 = d_loss_d_linear_model(y_pred=y_pred, model_data=model_data)
     du1_dw = d_model_d_weights(model_data=model_data)
     du1_db = d_linear_model_d_bias()
@@ -58,7 +49,7 @@ def gradient_loss(y_pred: torch.tensor, model_data: LinearModelData) -> torch.te
     return torch.stack([dl_dw, dl_db])
 
 
-def training_loop(n_epochs: int, training_data: LinearModelData, hyper_parameters: HyperParameters,
+def training_loop(n_epochs: int, training_data: ModelData, hyper_parameters: HyperParameters,
                   parameters: torch.tensor, print_step: int = 500, print_parameters: bool = True) -> torch.tensor:
     for epoch in range(n_epochs):
         # Forward Pass

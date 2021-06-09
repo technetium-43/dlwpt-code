@@ -1,6 +1,7 @@
 import torch
 
-from p1ch5.linear_model import LinearModelData, HyperParameters, training_loop
+from p1ch5.model_data import ModelData, HyperParameters
+from p1ch5.linear_model import training_loop
 from p1ch5.render import render_temp_measurements
 
 
@@ -17,8 +18,8 @@ def test_linear_model_learning_overtraining():
     t_u = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
 
-    data = LinearModelData(temp_celsius=t_c,
-                           temp_unknown=t_u)
+    data = ModelData(temp_celsius=t_c,
+                     temp_unknown=t_u)
 
     # Plot the inputs
     render_temp_measurements(data=data)
@@ -40,8 +41,8 @@ def test_linear_model_learning_stalling():
     # Organize the model inputs
     temperature_celsius = torch.tensor([0.5, 14.0, 15.0, 28.0, 11.0, 8.0, 3.0, -4.0, 6.0, 13.0, 21.0])
     temperature_unknown = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
-    data = LinearModelData(temp_celsius=temperature_celsius,
-                           temp_unknown=temperature_unknown)
+    data = ModelData(temp_celsius=temperature_celsius,
+                     temp_unknown=temperature_unknown)
 
     # Model parameters
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
@@ -69,8 +70,8 @@ def test_linear_model_learning_easy_norm():
     temperature_unknown = torch.tensor([35.7, 55.9, 58.2, 81.9, 56.3, 48.9, 33.9, 21.8, 48.4, 60.4, 68.4])
     # Normalize the unknown temperatures to be closer in scale to temperature_celsius
     temperature_unknown_normalized = 0.1 * temperature_unknown
-    data = LinearModelData(temp_celsius=temperature_celsius,
-                           temp_unknown=temperature_unknown_normalized)
+    data = ModelData(temp_celsius=temperature_celsius,
+                     temp_unknown=temperature_unknown_normalized)
 
     # Model parameters
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]

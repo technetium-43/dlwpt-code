@@ -1,18 +1,10 @@
 import torch
 from torch import optim
 from typing import NamedTuple
+from p1ch5.model_data import ModelData, HyperParameters
 
 
-class LinearModelData(NamedTuple):
-    temp_celsius: torch.tensor
-    temp_unknown: torch.tensor
-
-
-class HyperParameters(NamedTuple):
-    learning_rate: torch.tensor
-
-
-def linear_model(model_data: LinearModelData, parameters: torch.tensor) -> torch.tensor:
+def linear_model(model_data: ModelData, parameters: torch.tensor) -> torch.tensor:
     # m = Linear model
     weights = parameters[0]
     bias = parameters[1]
@@ -20,13 +12,13 @@ def linear_model(model_data: LinearModelData, parameters: torch.tensor) -> torch
     return weights * model_data.temp_unknown + bias
 
 
-def loss_error_squared(y_pred: torch.tensor, model_data: LinearModelData) -> torch.tensor:
+def loss_error_squared(y_pred: torch.tensor, model_data: ModelData) -> torch.tensor:
     return ((y_pred - model_data.temp_celsius) ** 2).mean()
 
 
 def training_loop(n_epochs: int, optimizer: torch.optim,
-                  training_data: LinearModelData, parameters: torch.tensor,
-                  validation_data: LinearModelData = None,
+                  training_data: ModelData, parameters: torch.tensor,
+                  validation_data: ModelData = None,
                   print_step: int = 500, print_parameters: bool = True) -> torch.tensor:
     for epoch in range(n_epochs):
 
