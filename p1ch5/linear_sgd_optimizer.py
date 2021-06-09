@@ -41,8 +41,13 @@ def training_loop(n_epochs: int, optimizer: torch.optim,
 
         # Calculate forward pass and loss for training data
         if validation_data is not None:
-            validation_temperature_prediction = linear_model(model_data=validation_data, parameters=parameters)
-            validation_loss = loss_error_squared(y_pred=validation_temperature_prediction, model_data=validation_data)
+            with torch.no_grad():
+                # Disable torch.autograd with torch.no_grade() context manager
+                # https://pytorch.org/docs/stable/generated/torch.no_grad.html
+                validation_temperature_prediction = linear_model(model_data=validation_data, parameters=parameters)
+                validation_loss = loss_error_squared(y_pred=validation_temperature_prediction,
+                                                     model_data=validation_data)
+                # assert validation_loss.requires_grad == False  # Check that the output requires _grad args are foced to False
         else:
             validation_temperature_prediction = -1
             validation_loss = -1
@@ -59,10 +64,12 @@ def training_loop(n_epochs: int, optimizer: torch.optim,
         if epoch == 0:
             print('\n')
         if not print_parameters and epoch % print_step == 0:
-            print(f"Epoch: {epoch}, Training loss: {float(training_loss):.4f}, Validation loss: {float(validation_loss):.4f}")
+            print(
+                f"Epoch: {epoch}, Training loss: {float(training_loss):.4f}, Validation loss: {float(validation_loss):.4f}")
         elif print_parameters and epoch % print_step == 0:
-            print(f"Epoch: {epoch}, Training loss: {float(training_loss):.4f}, Validation loss: {float(validation_loss):.4f}"
-                  f"\n\tWeights: {float(parameters[0]):.4f}, Bias: {float(parameters[1]):.4f}"
-                  f"\n\tLoss Gradient: {parameters.grad}")
+            print(
+                f"Epoch: {epoch}, Training loss: {float(training_loss):.4f}, Validation loss: {float(validation_loss):.4f}"
+                f"\n\tWeights: {float(parameters[0]):.4f}, Bias: {float(parameters[1]):.4f}"
+                f"\n\tLoss Gradient: {parameters.grad}")
 
     return parameters

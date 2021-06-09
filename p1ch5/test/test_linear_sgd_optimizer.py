@@ -80,5 +80,5 @@ def test_linear_model_validation():
     # Run the training loop
     final_parameters = training_loop(n_epochs=5_001, optimizer=sgd_optimizer, training_data=training_data,
                                      parameters=parameters, validation_data=validation_data,
-                                     print_step=10, print_parameters=False)
+                                     print_step=100, print_parameters=False)
     print(f"\nFinal Parameters [Weights, Bias]: {final_parameters}")
