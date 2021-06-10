@@ -2,7 +2,7 @@ import torch
 
 from p1ch5.model_data import ModelData, HyperParameters
 from p1ch5.linear_model import training_loop
-from p1ch5.render import render_temp_measurements
+from p1ch5.render import render_scatter_input_data
 
 
 def test_linear_model_learning_overtraining():
@@ -22,7 +22,7 @@ def test_linear_model_learning_overtraining():
                      temp_unknown=t_u)
 
     # Plot the inputs
-    render_temp_measurements(data=data)
+    render_results(data=data)
 
     # Run the training loop
     final_parameters = training_loop(n_epochs=100, training_data=data, hyper_parameters=hyper_parameters,
@@ -48,7 +48,7 @@ def test_linear_model_learning_stalling():
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
 
     # Plot the inputs
-    render_temp_measurements(data=data)
+    render_scatter_input_data(data=data)
 
     # Run the training loop
     final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,
@@ -77,7 +77,7 @@ def test_linear_model_learning_easy_norm():
     parameters = torch.tensor([1.0, 0.0])  # [Weights, Bias]
 
     # Plot the inputs
-    render_temp_measurements(data=data)
+    render_scatter_input_data(data=data)
 
     # Run the training loop
     final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,

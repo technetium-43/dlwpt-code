@@ -1,7 +1,7 @@
 import torch
 from p1ch5.model_data import ModelData, HyperParameters
 from p1ch5.linear_model_auto_gradient import training_loop
-from p1ch5.render import render_temp_measurements
+from p1ch5.render import render_scatter_input_data
 
 
 def test_linear_model():
@@ -23,7 +23,7 @@ def test_linear_model():
     parameters = torch.tensor([1.0, 0.0], requires_grad=True)  # [Weights, Bias]
 
     # Plot the inputs
-    render_temp_measurements(data=data)
+    render_scatter_input_data(data=data)
 
     # Run the training loop
     final_parameters = training_loop(n_epochs=5_000, training_data=data, hyper_parameters=hyper_parameters,
